@@ -114,3 +114,15 @@ add_action( 'caldera_forms_submit_complete', function( $form, $referrer, $proces
   }
 
 }, 10, 3 );
+
+add_filter( 'wp_nav_menu_items', 'yhv_loginout_menu_link', 10, 2 );
+function yhv_loginout_menu_link( $items, $args ) {
+  if ($args->theme_location == 'primary') {
+    if (!empty($_COOKIE['volunteer_cid'])) {
+      $items .= '<li class="right"><a href="' . get_site_url() . '/volunteer-login?action=logout">'. __("Log Out") .'</a></li>';
+    } else {
+      $items .= '<li class="right"><a href="' . get_site_url() . '/volunteer-login">'. __("Log In") .'</a></li>';
+    }
+  }
+  return $items;
+}
