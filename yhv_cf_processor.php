@@ -74,16 +74,22 @@ add_action( 'caldera_forms_submit_complete', function( $form, $referrer, $proces
       curl_setopt($ch, CURLOPT_POST, true);
       curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
       curl_exec($ch);
-    } else {
+    }
+    else {
       $options = [];
-      $params = [
-        'cid' => $_COOKIE['volunteer_cid'],
-        'tb_test' => $data['files']['tb_test'],
-        'police_check' => $data['files']['police_check'],
-        'first_aid' => $data['files']['first_aid'],
-      ];
-      $call = wpcmrf_api('FormProcessor', 'verification_files', $params, $options, WP_CMRF_ID);
-      $call->getReply();
+      $data['sequential'] = 1;
+      $call = wpcmrf_api('Contact', 'get', $data, $options, WP_CMRF_ID);
+      $cid = $call->getReply()['values'][0]['id'];
+      if (!empty($cid)) {
+        $params = [
+          'cid' => $cid,
+          'tb_test' => $data['files']['tb_test'],
+          'police_check' => $data['files']['police_check'],
+          'first_aid' => $data['files']['first_aid'],
+        ];
+        $call = wpcmrf_api('FormProcessor', 'verification_files', $params, $options, WP_CMRF_ID);
+        $call->getReply();
+      }
     }
   }
   if (in_array($form['ID'], ['CF5f8ebe3f3f889', 'CF5f8ebef61a6bd'])) {
