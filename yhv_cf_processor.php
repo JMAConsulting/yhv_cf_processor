@@ -89,6 +89,14 @@ add_action( 'caldera_forms_submit_complete', function( $form, $referrer, $proces
         ];
         $call = wpcmrf_api('FormProcessor', 'verification_files', $params, $options, WP_CMRF_ID);
         $call->getReply();
+
+        $params = [
+          'cid' => $cid,
+          'email' => $data['email'],
+          'first_name' => $data['first_name'],
+          'last_name' => $data['last_name'],
+        ];
+        wpcmrf_api('Contact', 'createwpuser', $params, $options, WP_CMRF_ID);
       }
     }
   }
