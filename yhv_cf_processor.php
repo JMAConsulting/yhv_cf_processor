@@ -9,6 +9,13 @@ Author: Edsel Lopez
 License: GPLv2 or later
 */
 
+add_filter( 'caldera_forms_render_get_field', function( $field ) {
+  if(in_array($field['ID'], ['fld_9596113', 'fld_2531943'])){
+    $field['config']['default'] = $_COOKIE['volunteer_cid'];
+  }
+  return $field;
+});
+
 /**
  * Get a field value and send to remote API
  */
@@ -37,6 +44,7 @@ add_action( 'caldera_forms_submit_complete', function( $form, $referrer, $proces
     // TB Screening Form.
     $fields = [
       'activity_date' => 'fld_3478308',
+      'cid' => 'fld_9596113',
       'files' => [
         'tb_test' => 'fld_6340504',
       ],
@@ -46,6 +54,7 @@ add_action( 'caldera_forms_submit_complete', function( $form, $referrer, $proces
     // Police Check Form.
     $fields = [
       'activity_date' => 'fld_2728792',
+      'cid' => 'fld_2531943',
       'files' => [
         'police_check' => 'fld_1855544',
       ],
@@ -68,11 +77,12 @@ add_action( 'caldera_forms_submit_complete', function( $form, $referrer, $proces
   if ($form['ID'] == 'CF5f63138ba9942') {
     if ($profiles[WP_CMRF_ID]['connector'] == 'curl') {
       $url = $parsedUrl['scheme'] . "://" . $parsedUrl['host'] . '/fileupload.php';
-      $data['fileparams'] = $data;
+      $dataToSend = [];
+      $dataToSend['fileparams'] = json_encode($data);
       $ch = curl_init();
       curl_setopt($ch, CURLOPT_URL, $url);
       curl_setopt($ch, CURLOPT_POST, true);
-      curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+      curl_setopt($ch, CURLOPT_POSTFIELDS, $dataToSend);
       curl_exec($ch);
     }
     else {
@@ -93,18 +103,18 @@ add_action( 'caldera_forms_submit_complete', function( $form, $referrer, $proces
     }
   }
   if (in_array($form['ID'], ['CF5f8ebe3f3f889', 'CF5f8ebef61a6bd'])) {
+    // We support only remote forms for verification.
     if ($profiles[WP_CMRF_ID]['connector'] == 'curl') {
       $url = $parsedUrl['scheme'] . "://" . $parsedUrl['host'] . '/verification.php';
-      $data['form_id'] = $form['ID'];
-      $data['cid'] = $_COOKIE['volunteer_cid'];
       $dataToSend = [];
       $dataToSend['fileparams'] = json_encode($data);
       $ch = curl_init();
       curl_setopt($ch, CURLOPT_URL, $url);
       curl_setopt($ch, CURLOPT_POST, true);
       curl_setopt($ch, CURLOPT_POSTFIELDS, $dataToSend);
-      $res = curl_exec($ch);
-    } else {
+      curl_exec($ch);
+    }
+/*    else {
       $options = [];
       $params = [
         'cid' => $_COOKIE['volunteer_cid'],
@@ -119,7 +129,7 @@ add_action( 'caldera_forms_submit_complete', function( $form, $referrer, $proces
         $call = wpcmrf_api('FormProcessor', 'police_check_verfication', $params, $options, WP_CMRF_ID);
       }
       $call->getReply();
-    }
+    }*/
   }
 
 }, 10, 3 );
