@@ -95,12 +95,15 @@ add_action( 'caldera_forms_submit_complete', function( $form, $referrer, $proces
   if (in_array($form['ID'], ['CF5f8ebe3f3f889', 'CF5f8ebef61a6bd'])) {
     if ($profiles[WP_CMRF_ID]['connector'] == 'curl') {
       $url = $parsedUrl['scheme'] . "://" . $parsedUrl['host'] . '/verification.php';
-      $data['fileparams'] = $data;
+      $data['form_id'] = $form['ID'];
+      $data['cid'] = $_COOKIE['volunteer_cid'];
+      $dataToSend = [];
+      $dataToSend['fileparams'] = json_encode($data);
       $ch = curl_init();
       curl_setopt($ch, CURLOPT_URL, $url);
       curl_setopt($ch, CURLOPT_POST, true);
-      curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-      curl_exec($ch);
+      curl_setopt($ch, CURLOPT_POSTFIELDS, $dataToSend);
+      $res = curl_exec($ch);
     } else {
       $options = [];
       $params = [
@@ -125,9 +128,9 @@ add_filter( 'wp_nav_menu_items', 'yhv_loginout_menu_link', 10, 2 );
 function yhv_loginout_menu_link( $items, $args ) {
   if ($args->theme_location == 'primary') {
     if (!empty($_COOKIE['volunteer_cid'])) {
-      $items .= '<li class="right"><a href="' . get_site_url() . '/volunteer-login?action=logout">'. __("Log Out") .'</a></li>';
+      $items .= '<li class="right"><a href="' . get_site_url() . '/volunteer-login?action=logout">'. __("Volunteer Log Out") .'</a></li>';
     } else {
-      $items .= '<li class="right"><a href="' . get_site_url() . '/volunteer-login">'. __("Log In") .'</a></li>';
+      $items .= '<li class="right"><a href="' . get_site_url() . '/volunteer-login">'. __("Volunteer Log In") .'</a></li>';
     }
   }
   return $items;
