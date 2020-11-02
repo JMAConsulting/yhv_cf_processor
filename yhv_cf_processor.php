@@ -107,6 +107,13 @@ add_action( 'caldera_forms_submit_complete', function( $form, $referrer, $proces
     if ($profiles[WP_CMRF_ID]['connector'] == 'curl') {
       $url = $parsedUrl['scheme'] . "://" . $parsedUrl['host'] . '/verification.php';
       $dataToSend = [];
+      if ($form['ID'] == 'CF5f8ebe3f3f889') {
+        // TB Screening
+        $data['type'] = 'tb_test_verification';
+      }
+      else {
+        $data['type'] = 'police_check_verification';
+      }
       $dataToSend['fileparams'] = json_encode($data);
       $ch = curl_init();
       curl_setopt($ch, CURLOPT_URL, $url);
