@@ -162,3 +162,5 @@ function yhv_loginout_menu_link( $items, $args ) {
   }
   return $items;
 }
+
+add_filter( 'caldera_forms_magic_summary_should_use_label', '__return_true' );
