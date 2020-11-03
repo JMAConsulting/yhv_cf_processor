@@ -66,6 +66,28 @@ add_action( 'caldera_forms_submit_complete', function( $form, $referrer, $proces
     return;
   }
   if ($form['ID'] == 'CF5f63138ba9942') {
+    $options = [];
+    $data['sequential'] = 1;
+    $call = wpcmrf_api('Contact', 'get', $data, $options, WP_CMRF_ID);
+    $cid = $call->getReply()['values'][0]['id'];
+    if (!empty($cid)) {
+      $params = [
+        'cid' => $cid,
+        'tb_test' => $data['files']['tb_test'],
+        'police_check' => $data['files']['police_check'],
+        'first_aid' => $data['files']['first_aid'],
+      ];
+      $call = wpcmrf_api('FormProcessor', 'verification_files', $params, $options, WP_CMRF_ID);
+      $call->getReply();
+
+      $params = [
+        'cid' => $cid,
+        'email' => $data['email'],
+        'first_name' => $data['first_name'],
+        'last_name' => $data['last_name'],
+      ];
+      wpcmrf_api('Contact', 'createwpuser', $params, $options, WP_CMRF_ID);
+    }
     if ($profiles[WP_CMRF_ID]['connector'] == 'curl') {
       $url = $parsedUrl['scheme'] . "://" . $parsedUrl['host'] . '/fileupload.php';
       $data['fileparams'] = $data;
@@ -74,30 +96,6 @@ add_action( 'caldera_forms_submit_complete', function( $form, $referrer, $proces
       curl_setopt($ch, CURLOPT_POST, true);
       curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
       curl_exec($ch);
-    }
-    else {
-      $options = [];
-      $data['sequential'] = 1;
-      $call = wpcmrf_api('Contact', 'get', $data, $options, WP_CMRF_ID);
-      $cid = $call->getReply()['values'][0]['id'];
-      if (!empty($cid)) {
-        $params = [
-          'cid' => $cid,
-          'tb_test' => $data['files']['tb_test'],
-          'police_check' => $data['files']['police_check'],
-          'first_aid' => $data['files']['first_aid'],
-        ];
-        $call = wpcmrf_api('FormProcessor', 'verification_files', $params, $options, WP_CMRF_ID);
-        $call->getReply();
-
-        $params = [
-          'cid' => $cid,
-          'email' => $data['email'],
-          'first_name' => $data['first_name'],
-          'last_name' => $data['last_name'],
-        ];
-        wpcmrf_api('Contact', 'createwpuser', $params, $options, WP_CMRF_ID);
-      }
     }
   }
   if (in_array($form['ID'], ['CF5f8ebe3f3f889', 'CF5f8ebef61a6bd'])) {
