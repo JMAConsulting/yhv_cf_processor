@@ -165,8 +165,11 @@ function yhv_loginout_menu_link( $items, $args ) {
 
 add_filter( 'caldera_forms_magic_summary_should_use_label', '__return_true' );
 
-add_filter( 'caldera_forms_field_attributes', function($attrs){
-  $attrs[ 'data-parsley-error-message' ] = 'This value is required 此為必填項';
+add_filter( 'caldera_forms_field_attributes', function($attrs, $field){
+  $attrs[ 'data-parsley-error-message' ] = 'This value is required 此為必填項.';
+  if (in_array($field['ID'], ['fld_6944738', 'fld_2474956'])) {
+    $attrs[ 'data-parsley-error-message' ] = 'You must enter a number between 42 and 88';
+  }
 
 return $attrs;
-}, 10);
+}, 10, 2);
