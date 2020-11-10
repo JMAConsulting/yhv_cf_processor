@@ -164,3 +164,9 @@ function yhv_loginout_menu_link( $items, $args ) {
 }
 
 add_filter( 'caldera_forms_magic_summary_should_use_label', '__return_true' );
+
+add_filter( 'caldera_forms_field_attributes', function($attrs){
+  $attrs[ 'data-parsley-error-message' ] = 'This value is required 此為必填項';
+
+return $attrs;
+}, 10);
