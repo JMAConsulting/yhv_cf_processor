@@ -16,6 +16,7 @@ add_filter( 'caldera_forms_render_get_field', function( $field ) {
   $params = ['cid' => 39297];
   $options = [];
   $contact = wpcmrf_api('Contact', 'getvolunteer', $params, $options, WP_CMRF_ID);
+  $contact = $contact->getReply();
   $calderaFields = [
     'first_name' => 'fld_6402306',
     'last_name' => 'fld_2148379',
@@ -23,10 +24,11 @@ add_filter( 'caldera_forms_render_get_field', function( $field ) {
     'Age_18' => 'fld_6944738',
     'street_address' => 'fld_6114391',
     'Profession_checkbox' => 'fld_3350613',
+    'gender' => 'fld_7074178',
   ];
   foreach ($calderaFields as $customField => $calderaField) {
-    if ($field['ID'] == $calderaField) {
-      $field['config']['default'] = $contact[$customField];
+    if ($field['ID'] == $calderaField && !empty($contact['values'][$customField])) {
+      $field['config']['default'] = $contact['values'][$customField];
     }
   }
   return $field;
