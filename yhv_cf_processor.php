@@ -22,8 +22,13 @@ add_filter( 'caldera_forms_render_get_field', function( $field ) {
     'Chinese_Name' => 'fld_6152062',
     'Age_18' => 'fld_6944738',
     'street_address' => 'fld_6114391',
+    'Profession_checkbox' => 'fld_3350613',
   ];
-  print_R($contact);
+  foreach ($calderaFields as $customField => $calderaField) {
+    if ($field['ID'] == $calderaField) {
+      $field['config']['default'] = $contact[$customField];
+    }
+  }
   return $field;
 });
 
