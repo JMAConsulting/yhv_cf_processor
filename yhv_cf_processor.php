@@ -34,7 +34,7 @@ add_filter( 'caldera_forms_render_get_field', function( $field ) {
     'emergency_first_name' => 'fld_5910180',
     'emergency_last_name' => 'fld_8051240',
     'emergency_relationship' => 'fld_437188',
-    'emergency_contact' => 'fld_8360780',
+    'emergency_phone' => 'fld_8360780',
     'Area_of_Education_' => 'fld_5583330',
     'Other_Areas_of_Education' => 'fld_8009906',
     'Profession_checkbox' => 'fld_3350613',
