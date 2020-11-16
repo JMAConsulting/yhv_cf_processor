@@ -13,6 +13,17 @@ add_filter( 'caldera_forms_render_get_field', function( $field ) {
   if(in_array($field['ID'], ['fld_9596113', 'fld_2531943'])){
     $field['config']['default'] = $_COOKIE['volunteer_cid'];
   }
+  $params = ['cid' => 39297];
+  $options = [];
+  $contact = wpcmrf_api('Contact', 'getvolunteer', $params, $options, WP_CMRF_ID);
+  $calderaFields = [
+    'first_name' => 'fld_6402306',
+    'last_name' => 'fld_2148379',
+    'Chinese_Name' => 'fld_6152062',
+    'Age_18' => 'fld_6944738',
+    'street_address' => 'fld_6114391',
+  ];
+  print_R($contact);
   return $field;
 });
 
