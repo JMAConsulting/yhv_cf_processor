@@ -40,8 +40,8 @@ add_filter( 'caldera_forms_render_get_field', function( $field ) {
       'Other_Areas_of_Education' => 'other_area_of_education',
       'Profession_checkbox' => 'professions',
       'Other_profession' => 'other_profession',
-      'Car_' => 'car',
-      'How_many_years_of_driving_experience_do_you_have_in_Ontario_' => 'driving_licence_years',
+      'Car_' => 'driving_license',
+      'How_many_years_of_driving_experience_do_you_have_in_Ontario_' => 'driving_class',
     ];
     // Render slugs for timetable.
     for ($i = 1; $i <= 6; $i++) {
@@ -53,6 +53,9 @@ add_filter( 'caldera_forms_render_get_field', function( $field ) {
       if ($field['slug'] == $calderaField && !empty($contact['values'][$customField])) {
         $field['config']['default'] = $contact['values'][$customField];
       }
+    }
+    if ($field['ID'] == 'fld_467987') {
+	    $field['config']['default'] = $params['cid'];
     }
   }
   return $field;
