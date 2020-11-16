@@ -10,48 +10,49 @@ License: GPLv2 or later
 */
 
 add_filter( 'caldera_forms_render_get_field', function( $field ) {
-  if(in_array($field['ID'], ['fld_9596113', 'fld_2531943'])){
+  if(in_array($field['ID'], ['fld_9596113', 'fld_2531943']) && !empty($_COOKIE['volunteer_cid'])){
     $field['config']['default'] = $_COOKIE['volunteer_cid'];
   }
-  $params = ['cid' => 39297];
-  $options = [];
-  $contact = wpcmrf_api('Contact', 'getvolunteer', $params, $options, WP_CMRF_ID);
-  $contact = $contact->getReply();
-  $calderaFields = [
-    'first_name' => 'first_name',
-    'last_name' => 'last_name',
-    'Chinese_Name' => 'chinese_name',
-    'gender' => 'gender',
-    'Age_18' => 'age_18_',
-    'street_address' => 'street_address',
-    'city' => 'city',
-    'postal_code' => 'postal_code',
-    'state_province_name' => 'province',
-    'mobile' => 'mobile',
-    'residence' => 'residence',
-    'office' => 'office',
-    'email' => 'email',
-    'emergency_first_name' => 'emergency_contact_first_name',
-    'emergency_last_name' => 'emergency_contact_last_name',
-    'emergency_relationship' => 'relationship',
-    'emergency_phone' => 'emergency_contact_phone',
-    'Area_of_Education_' => 'area_of_education',
-    'Other_Areas_of_Education' => 'other_area_of_education',
-    'Profession_checkbox' => 'professions',
-    'Other_profession' => 'other_profession',
-    'Car_' => 'car',
-    'How_many_years_of_driving_experience_do_you_have_in_Ontario_' => 'driving_licence_years',
-  ];
-  
-  // Render slugs for timetable.
-  for ($i = 1; $i <= 6; $i++) {
-    for ($j = 1; $j <= 7; $j++) {
-      $calderaFields[$j . '_' .$i] = $j . '_' .$i;
+  if (!empty($_COOKIE['volunteer_cid'])) {
+    $params = ['cid' => $_COOKIE['volunteer_cid']];
+    $options = [];
+    $contact = wpcmrf_api('Contact', 'getvolunteer', $params, $options, WP_CMRF_ID);
+    $contact = $contact->getReply();
+    $calderaFields = [
+      'first_name' => 'first_name',
+      'last_name' => 'last_name',
+      'Chinese_Name' => 'chinese_name',
+      'gender' => 'gender',
+      'Age_18' => 'age_18_',
+      'street_address' => 'street_address',
+      'city' => 'city',
+      'postal_code' => 'postal_code',
+      'state_province_name' => 'province',
+      'mobile' => 'mobile',
+      'residence' => 'residence',
+      'office' => 'office',
+      'email' => 'email',
+      'emergency_first_name' => 'emergency_contact_first_name',
+      'emergency_last_name' => 'emergency_contact_last_name',
+      'emergency_relationship' => 'relationship',
+      'emergency_phone' => 'emergency_contact_phone',
+      'Area_of_Education_' => 'area_of_education',
+      'Other_Areas_of_Education' => 'other_area_of_education',
+      'Profession_checkbox' => 'professions',
+      'Other_profession' => 'other_profession',
+      'Car_' => 'car',
+      'How_many_years_of_driving_experience_do_you_have_in_Ontario_' => 'driving_licence_years',
+    ];
+    // Render slugs for timetable.
+    for ($i = 1; $i <= 6; $i++) {
+      for ($j = 1; $j <= 7; $j++) {
+        $calderaFields[$j . '_' . $i] = $j . '_' . $i;
+      }
     }
-  }
-  foreach ($calderaFields as $customField => $calderaField) {
-    if ($field['slug'] == $calderaField && !empty($contact['values'][$customField])) {
-      $field['config']['default'] = $contact['values'][$customField];
+    foreach ($calderaFields as $customField => $calderaField) {
+      if ($field['slug'] == $calderaField && !empty($contact['values'][$customField])) {
+        $field['config']['default'] = $contact['values'][$customField];
+      }
     }
   }
   return $field;
