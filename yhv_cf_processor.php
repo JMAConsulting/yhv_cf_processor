@@ -208,6 +208,18 @@ function yhv_loginout_menu_link( $items, $args ) {
   return $items;
 }
 
+function yhv_exclude_menu_items( $items, $menu, $args ) {
+    if (!empty($_COOKIE['volunteer_cid'])) {	    
+	    foreach ( $items as $key => $item ) {
+        if ( $item->object_id == 16 ) unset( $items[$key] );
+    }
+    }
+
+    return $items;
+}
+
+add_filter( 'wp_get_nav_menu_items', 'yhv_exclude_menu_items', null, 3 );
+
 add_filter( 'caldera_forms_magic_summary_should_use_label', '__return_true' );
 
 add_filter( 'caldera_forms_field_attributes', function($attrs){
