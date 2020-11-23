@@ -42,6 +42,7 @@ add_filter( 'caldera_forms_render_get_field', function( $field ) {
       'Other_profession' => 'other_profession',
       'Car_' => 'car',
       'How_many_years_of_driving_experience_do_you_have_in_Ontario_' => 'driving_licence_years',
+      'contact_id' => 'contact_id',
     ];
     // Render slugs for timetable.
     for ($i = 1; $i <= 6; $i++) {
