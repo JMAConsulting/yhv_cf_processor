@@ -10,6 +10,9 @@ License: GPLv2 or later
 */
 
 add_filter( 'caldera_forms_render_get_field', function( $field ) {
+  if (!empty($_POST) && $_POST['action'] == 'cf_process_ajax_submit') {
+    return $field;
+  }
   if(in_array($field['ID'], ['fld_9596113', 'fld_2531943']) && !empty($_COOKIE['volunteer_cid'])){
     $field['config']['default'] = $_COOKIE['volunteer_cid'];
   }
@@ -40,9 +43,8 @@ add_filter( 'caldera_forms_render_get_field', function( $field ) {
       'Other_Areas_of_Education' => 'other_area_of_education',
       'Profession_checkbox' => 'professions',
       'Other_profession' => 'other_profession',
-      'Car_' => 'car',
-      'How_many_years_of_driving_experience_do_you_have_in_Ontario_' => 'driving_licence_years',
-      'contact_id' => 'contact_id',
+      'Car_' => 'driving_license',
+      'How_many_years_of_driving_experience_do_you_have_in_Ontario_' => 'driving_class',
     ];
     // Render slugs for timetable.
     for ($i = 1; $i <= 6; $i++) {
@@ -54,6 +56,9 @@ add_filter( 'caldera_forms_render_get_field', function( $field ) {
       if ($field['slug'] == $calderaField && !empty($contact['values'][$customField])) {
         $field['config']['default'] = $contact['values'][$customField];
       }
+    }
+    if ($field['ID'] == 'fld_467987') {
+	    $field['config']['default'] = $params['cid'];
     }
   }
   return $field;
@@ -205,6 +210,18 @@ function yhv_loginout_menu_link( $items, $args ) {
   }
   return $items;
 }
+
+function yhv_exclude_menu_items( $items, $menu, $args ) {
+    if (!empty($_COOKIE['volunteer_cid'])) {	    
+	    foreach ( $items as $key => $item ) {
+        if ( $item->object_id == 16 ) unset( $items[$key] );
+    }
+    }
+
+    return $items;
+}
+
+add_filter( 'wp_get_nav_menu_items', 'yhv_exclude_menu_items', null, 3 );
 
 add_filter( 'caldera_forms_magic_summary_should_use_label', '__return_true' );
 
