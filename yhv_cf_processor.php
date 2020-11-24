@@ -203,9 +203,9 @@ add_filter( 'wp_nav_menu_items', 'yhv_loginout_menu_link', 10, 2 );
 function yhv_loginout_menu_link( $items, $args ) {
   if (get_site_url() == 'https://yhvolunteer.jmaconsulting.biz' && $args->theme_location == 'primary') {
     if (!empty($_COOKIE['volunteer_cid'])) {
-      $items .= '<li class="right"><a href="' . get_site_url() . '/volunteer-login?action=logout">'. __("Volunteer Log Out 義工登出") .'</a></li>';
+      $items .= '<li class="right"><a href="' . get_site_url() . '/volunteer-login?action=logout">'. __("Volunteer Log Out") . '<br/>' . __("義工登出") .'</a></li>';
     } else {
-      $items .= '<li class="right"><a href="' . get_site_url() . '/volunteer-login">'. __("Volunteer Log In 義工登入") .'</a></li>';
+      $items .= '<li class="right"><a href="' . get_site_url() . '/volunteer-login">'. __("Volunteer Log In") . '<br/>' . __("義工登入") .'</a></li>';
     }
   }
   return $items;
