@@ -230,3 +230,95 @@ add_filter( 'caldera_forms_field_attributes', function($attrs){
 
 return $attrs;
 }, 10);
+
+add_filter('caldera_forms_get_form_processors', 'yhv_email_cf_validator_processor');
+
+/**
+ * Add a custom processor for field validation
+ *
+ * @uses 'yhv_email_cf_validator_processor'
+ *
+ * @param array $processors Processor configs
+ *
+ * @return array
+ */
+function yhv_email_cf_validator_processor($processors){
+  $processors['yhv_email_cf_validator'] = array(
+    'name' => __('YHV Email Validator', 'yhv_cf_validator' ),
+    'description' => '',
+    'pre_processor' => 'yhv_email_validator',
+    'template' => dirname(__FILE__) . '/config.php'
+  );
+
+  return $processors;
+}
+
+/**
+ * Run field validation
+ *
+ * @param array $config Processor config
+ * @param array $form Form config
+ *
+ * @return array|void Error array if needed, else void.
+ */
+function yhv_email_validator( array $config, array $form ){
+
+  //Processor data object
+  $data = new Caldera_Forms_Processor_Get_Data( $config, $form, yhv_email_cf_validator_fields() );
+
+  //Value of field to be validated
+  $value = $data->get_value( 'email' );
+
+  //if not valid, return an error
+  if(yhv_email_cf_validator_is_valid( $value )){
+
+    //get ID of field to put error on
+    $fields = $data->get_fields();
+    $field_id = $fields[ 'email' ][ 'config_field' ];
+
+    //Get label of field to use in error message above form
+    $field = $form[ 'fields' ][ $field_id ];
+    $label = $field[ 'label' ];
+
+    //this is error data to send back
+    return array(
+      'type' => 'error',
+      //this message will be shown above form
+      'note' => __('The email address you have used already exists. Please click the previous button to navigate to the first page and change it.'),
+      //Add error messages for any form field
+      'fields' => array(
+        //This error message will be shown below the field that we are validating
+        $field_id => __( 'Email address already exists. Please use a different one', 'yhv_cf_validator' )
+      )
+    );
+  }
+}
+
+/**
+ * Check if email exists in WordPress.
+ *
+ * @return bool
+ */
+function yhv_email_cf_validator_is_valid( $value ){
+  if (email_exists($value)) {
+    return TRUE;
+  }
+  return FALSE;
+}
+
+/**
+ * Processor fields
+ *
+ * @return array
+ */
+function yhv_email_cf_validator_fields(){
+  return array(
+    array(
+      'id' => 'email',
+      'type' => 'email',
+      'required' => true,
+      'magic' => true,
+      'label' => __( 'Volunteer Email field', 'yhv_cf_validator' )
+    ),
+  );
+}
