@@ -300,10 +300,10 @@ function yhv_email_validator( array $config, array $form ){
  * @return bool
  */
 function yhv_email_cf_validator_is_valid( $value ){
-  if (email_exists($value)) {
-    return TRUE;
-  }
-  return FALSE;
+  $options = [];
+  $params = ['email' => $value];
+  $call = wpcmrf_api('Contact', 'validateemail', $params, $options, WP_CMRF_ID);
+  return $call->getReply()['values'];
 }
 
 /**
