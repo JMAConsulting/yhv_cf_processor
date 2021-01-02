@@ -86,6 +86,10 @@ add_action( 'caldera_forms_submit_complete', function( $form, $referrer, $proces
         'police_check' => 'fld_1303524',
         'first_aid' => 'fld_7859383',
       ],
+      'dates' => [
+        'tb_test' => 'fld_4812158',
+        'police_check' => 'fld_5883240',
+      ],
     ];
   }
   elseif ($form['ID'] == 'CF5f8ebe3f3f889') {
@@ -147,14 +151,24 @@ add_action( 'caldera_forms_submit_complete', function( $form, $referrer, $proces
       curl_exec($ch);
     }
     elseif (!empty($cid)) {
+      // Create the activities here.
       $params = [
+        'cid' => $cid,
+        'tb_test' => $data['files']['tb_test'],
+        'police_check' => $data['files']['police_check'],
+        'tb_test_date' => $data['dates']['tb_test'],
+        'police_check_date' => $data['dates']['police_check'],
+      ];
+      $call = wpcmrf_api('FormProcessor', 'volunteer_activity', $params, $options, WP_CMRF_ID);
+      $call->getReply();
+      /* $params = [
         'cid' => $cid,
         'tb_test' => $data['files']['tb_test'],
         'police_check' => $data['files']['police_check'],
         'first_aid' => $data['files']['first_aid'],
       ];
       $call = wpcmrf_api('FormProcessor', 'verification_files', $params, $options, WP_CMRF_ID);
-      $call->getReply();
+      $call->getReply(); */
     }
   }
   if (in_array($form['ID'], ['CF5f8ebe3f3f889', 'CF5f8ebef61a6bd'])) {
