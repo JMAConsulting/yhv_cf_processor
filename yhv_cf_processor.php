@@ -115,12 +115,15 @@ add_action( 'caldera_forms_submit_complete', function( $form, $referrer, $proces
   }
 
   foreach ($fields as $key => $value) {
-    if ($key != 'files') {
+    if ($key != 'files' && $key != 'dates') {
       $data[$key] = Caldera_Forms::get_field_data( $value, $form );
     }
     else {
       foreach($fields['files'] as $k => $v) {
         $data['files'][$k] = Caldera_Forms::get_field_data( $v, $form );
+      }
+      foreach($fields['dates'] as $d => $t) {
+	$data['dates'][$d] = Caldera_Forms::get_field_data( $t, $form );
       }
     }
   }
