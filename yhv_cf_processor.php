@@ -161,9 +161,13 @@ add_action( 'caldera_forms_submit_complete', function( $form, $referrer, $proces
         'tb_test' => $data['files']['tb_test'],
         'police_check' => $data['files']['police_check'],
         'first_aid' => $data['files']['first_aid'],
-        'tb_test_date' => date('Y-m-d', strtotime($data['dates']['tb_test'])),
-        'police_check_date' => date('Y-m-d', strtotime($data['dates']['police_check'])),
       ];
+      if (!empty($data['dates']['tb_test'])) {
+        $params['tb_test_date'] = date('Y-m-d', strtotime($data['dates']['tb_test']));
+      }
+      if (!empty($data['dates']['police_check'])) {
+        $params['police_check_date'] = date('Y-m-d', strtotime($data['dates']['police_check']));
+      }
       $call = wpcmrf_api('FormProcessor', 'volunteer_activity', $params, $options, WP_CMRF_ID);
       $call->getReply();
     }
